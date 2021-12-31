@@ -1,0 +1,22 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - npm install -g yarn
+      - npm install
+      - cp .env .env
+
+artifacts:
+  files:
+    - package.json
+    - bin/**/*
+    - buildspec.yml
+    - config/**/*
+    - controllers/**/*
+    - middlewares/**/*
+    - models/**/*
+    - public/**/*
+    - routes/**/*
+    - views/**/*
+    - .env
