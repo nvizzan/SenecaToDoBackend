@@ -5,7 +5,7 @@ phases:
     commands:
       - npm install -g yarn
       - npm install
-      - cp .env .env
+      - cp .env-dev .env
 
 artifacts:
   files:
