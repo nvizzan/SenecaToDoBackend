@@ -2,8 +2,12 @@ const Todo = require("../models/todo");
 var mongoose = require("mongoose");
 
 exports.getTodoList = async (req, res, next) => {
+  let owner = req.user._id;
+
 	try {
-		const tasks = await Todo.find();
+		const tasks = await Todo.find({
+      owner: owner  
+    });
 		res.status(200).json({
 			success: true,
 			data: tasks,
@@ -22,6 +26,7 @@ exports.getTodoList = async (req, res, next) => {
 
 exports.getTodo = async (req, res, next) => {
 	let _id = req.params.id;
+  let owner = req.user._id;
 
 	if (!_id) {
 		return res.status(401).json({
@@ -33,6 +38,7 @@ exports.getTodo = async (req, res, next) => {
 	try {
 		const task = await Todo.findById({
 			_id: _id,
+      owner: owner 
 		});
 
 		if (task === null) {
@@ -90,6 +96,7 @@ exports.addTask = async (req, res, next) => {
 exports.updateTask = async (req, res, next) => {
 	let _id = req.params.id;
 	let data = { ...req.body };
+  let owner = req.user._id;
 
 	console.log(data);
 
@@ -112,10 +119,13 @@ exports.updateTask = async (req, res, next) => {
 	}
 
 	try {
-		const task = await Todo.findByIdAndUpdate({ _id: _id }, data, {
+		const task = await Todo.findByIdAndUpdate({
+       _id: _id,
+       owner: owner
+      }, data, {
 			new: true,
 		});
-
+ 
 		if (task === null) {
 			return res.status(401).json({
 				status: "error",
@@ -139,6 +149,7 @@ exports.updateTask = async (req, res, next) => {
 
 exports.deleteTask = async (req, res, next) => {
 	let _id = req.params.id;
+  let owner = req.user._id;
 
 	if (!_id) {
 		return res.status(401).json({
@@ -155,7 +166,10 @@ exports.deleteTask = async (req, res, next) => {
 		}
 
 		try {
-			const task = await Todo.findOneAndDelete({ _id: _id });
+			const task = await Todo.findOneAndDelete({ 
+        _id: _id,
+        owner: owner
+      });
 
 			res.status(200).json({
 				status: true,
